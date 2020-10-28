@@ -1,0 +1,134 @@
+###########################################################
+#                     PARAMETERS FILE                     #
+###########################################################
+
+###############
+# likelihoods #
+###############
+
+#
+# TDCOSMO: original 74.5+5.6-6.1, will use symmetric error bar
+#
+use_TDCOSMO = True
+h_TD = 0.745
+h_TD_sig = 0.0585
+# uncomment below to use fake 1% here
+# h_TD_sig = 0.00745
+
+#
+# SN anchoring from Riess 2016
+#
+use_SH0ES = True
+aB = 0.71273
+aBsig = 0.00176
+anchor_lkl = lstAnchor.csv
+
+#
+# Early Universe data, from Planck 2018
+#
+use_early = False
+rsdrag_mean = 147.09
+rsdrag_sig = 0.26
+
+#
+# Pantheon SNe
+#
+use_Pantheon = True
+Pantheon_lkl = lcparam_full_long.dat
+Pantheon_covmat = sys_full_long.dat
+Pantheon_subset = 1048
+# SNe photon energy
+omegaSN [eV] = 1.
+
+#
+# BAO-BOSS DR12
+#
+use_BOSSDR12 = True
+BOSSDR12_meas = BAO_consensus_results_dM_Hz.txt
+BOSSDR12_covmat = BAO_consensus_covtot_dM_Hz.txt
+BOSSDR12_rsfid = 147.78
+
+#
+# low-z DR7 MGS + 6DFs
+# data is given as dV/rs, so no fiducial is needed
+#
+use_BAOlowz = True
+BAOlowz_lkl = bao_smallz_2014.txt
+
+#
+# Bonamente et al. cluster data
+#
+use_clusters = True
+wanna_correct = True
+# clusters SZ & X-ray photon energies
+omegaX [keV] = 5.
+omegaCMB [eV] = 2.4e-4
+# whether we use ICM effect
+ICM_effect = True
+
+###################
+#       IGM       #
+###################
+#
+# IGM flags:
+#
+redshift_dependent = True
+smoothed_IGM = False
+method_IGM = simps
+Nz_IGM = 101
+prob_func_IGM = norm_log
+
+#
+# IGM properties today:
+#
+B_IGM [nG] = 1.
+s_IGM [Mpc] = 1.
+ne_IGM [1/cm3] = 1.6e-8
+
+###################
+#       ICM       #
+###################
+#
+# ICM flags
+#
+smoothed_ICM = False
+method_ICM = product
+# prob_func_ICM = norm_log
+# Nr_ICM = 501
+return_arrays = True
+los_use_prepared_arrays = True
+los_method = quad
+# los_Nr = 501
+
+#
+# ICM properties
+#
+R_vir [Mpc] = 1.8
+L_ICM [kpc] = 6.08
+
+ICM_magnetic_model = A
+# ICM_magnetic_model = custom
+# r_low [kpc] = 0.
+# B_ref [muG] = 10.
+# r_ref [kpc] = 0.
+# eta = 0.5
+
+###################
+#    parameters   #
+###################
+#
+# param = [init, low, up, sigma]
+#
+OmL	=  [0.6847,   0.6, 0.75,  0.015]
+h0      =  [  0.73,   0.6,  0.8,   0.02]
+# logma =  [   -15,   -16,  -14,     0.]
+logma	=  [   -14,   -17,  -11,    0.25]
+logga	=  [   -11, -13.,   -8.,    0.1]
+M0 	=  [ -19.3,   -21,  -18,    0.1]
+rs	=  [147.78,  120., 160.,    1.]
+
+#
+# Miscellaneous
+#
+verbose = 2
+# debug = True
