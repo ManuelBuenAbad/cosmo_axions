@@ -121,13 +121,6 @@ if __name__ == '__main__':
     p = (figure.axes)[2].collections[0].get_paths()[0]
     v = p.vertices
     
-    np.savetxt(pltpath(directory, head='all_pts', ext='.txt'), v)
-    
-    # cutting out the unnecessary points
-    v = v[~(v[:,0] < -17.), :]
-    v = v[~(v[:,1] < -13.), :]
-    v = v[~(v[:,0] > -11.), :]
-
-    np.savetxt(pltpath(directory, head='reduced_pts', ext='.txt'), v)
+    np.savetxt(pltpath(directory, head='corner_pts', ext='.txt'), v)
 
     plt.savefig(pltpath(directory, head='custom'))
