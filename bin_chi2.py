@@ -169,7 +169,6 @@ if __name__ == '__main__':
     plt.contour(mesh_ma, mesh_ga, chi2_mins-bf_chi2, levels=[2.29141, 6.15823], colors=['b', 'r'])
     plt.contour(ma_arr, ga_arr, delta_arr, levels=[2.29141, 6.15823], colors=['cyan', 'orange'], linestyles=[':', ':'])
     
-    plt.savefig(directory+'plots/delta_chi2_contours.pdf')
     plt.savefig(pltpath(directory, head='delta_chi2_contours'))
     
     cs = plt.contour(ma_arr, ga_arr, delta_arr, levels=[6.15823])
