@@ -172,8 +172,14 @@ if __name__ == '__main__':
     plt.savefig(pltpath(directory, head='delta_chi2_contours'))
     
     cs = plt.contour(ma_arr, ga_arr, delta_arr, levels=[6.15823])
-    
     p = cs.collections[0].get_paths()[0]
     v = p.vertices
     
     np.savetxt(pltpath(directory, head='2sigma_pts', ext='.txt'), v)
+    
+    
+    cs2 = plt.contour(ma_arr, ga_arr, delta_arr, levels=[5.99146])
+    p2 = cs2.collections[0].get_paths()[0]
+    v2 = p2.vertices
+
+    np.savetxt(pltpath(directory, head='95CL_pts', ext='.txt'), v2)
