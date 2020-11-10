@@ -95,8 +95,10 @@ if __name__ == '__main__':
     if 'rs' in keys:
         labels.append(r"$r_s^{drag}$")
 
-    figure = corner.corner(samples, labels=labels, quantiles=[
-                           0.16, 0.5, 0.84], show_titles=True,
+    figure = corner.corner(samples,
+                           labels=labels,
+                           quantiles=[0.16, 0.5, 0.84],
+                           show_titles=True,
                            title_kwargs={"fontsize": 12})
     axes = np.array(figure.axes).reshape((dim_of_param, dim_of_param))
     
@@ -108,12 +110,14 @@ if __name__ == '__main__':
     reduced_samples = samples[:,2:4]
     reduced_dim = len(reduced_labels)
 
-    figure = corner.corner(reduced_samples, labels=reduced_labels,
+    figure = corner.corner(reduced_samples,
+                           labels=reduced_labels,
                            quantiles=[0.16, 0.5, 0.84],
                            color='r', show_titles=True,
                            plot_datapoints=False,
                            plot_density=False,
-                           levels=[1.-np.exp(-(2.)**2 /2.)],
+                           # levels=[1.-np.exp(-(2.)**2 /2.)],
+                           levels=[0.95],
                            title_kwargs={"fontsize": 12},
                            hist_kwargs={'color':None})
     axes = np.array(figure.axes).reshape((reduced_dim, reduced_dim))
@@ -121,6 +125,7 @@ if __name__ == '__main__':
     p = (figure.axes)[2].collections[0].get_paths()[0]
     v = p.vertices
     
+    # saving the points of the 95% C.R. contour
     np.savetxt(pltpath(directory, head='corner_pts', ext='.txt'), v)
 
     plt.savefig(pltpath(directory, head='custom'))

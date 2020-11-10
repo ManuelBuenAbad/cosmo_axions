@@ -166,20 +166,19 @@ if __name__ == '__main__':
     ga_gr, ma_gr = np.meshgrid(ga_arr, ma_arr, indexing='ij')
     delta_arr = delta_chi2(ma_gr, ga_gr)
     
+    # the delta_chi2 1- and 2-sigma contours, both straight out of the data and interpolated
     plt.contour(mesh_ma, mesh_ga, chi2_mins-bf_chi2, levels=[2.29141, 6.15823], colors=['b', 'r'])
     plt.contour(ma_arr, ga_arr, delta_arr, levels=[2.29141, 6.15823], colors=['cyan', 'orange'], linestyles=[':', ':'])
-    
     plt.savefig(pltpath(directory, head='delta_chi2_contours'))
     
+    # the points of the 2-sigma (95.45% C.L.) contour
     cs = plt.contour(ma_arr, ga_arr, delta_arr, levels=[6.15823])
     p = cs.collections[0].get_paths()[0]
     v = p.vertices
-    
     np.savetxt(pltpath(directory, head='2sigma_pts', ext='.txt'), v)
     
-    
+    # the points of the 95% C.L. contour
     cs2 = plt.contour(ma_arr, ga_arr, delta_arr, levels=[5.99146])
     p2 = cs2.collections[0].get_paths()[0]
     v2 = p2.vertices
-
     np.savetxt(pltpath(directory, head='95CL_pts', ext='.txt'), v2)

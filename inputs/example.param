@@ -59,11 +59,15 @@ BAOlowz_lkl = bao_smallz_2014.txt
 # Bonamente et al. cluster data
 #
 use_clusters = True
+
+# whether we should take into account corrections from asymmetric errors:
 wanna_correct = True
-# clusters SZ & X-ray photon energies
+
+# clusters SZ & X-ray photon energies:
 omegaX [keV] = 5.
 omegaCMB [eV] = 2.4e-4
-# whether we use ICM effect
+
+# whether we use ICM effect:
 ICM_effect = True
 
 ###################
@@ -72,10 +76,20 @@ ICM_effect = True
 #
 # IGM flags:
 #
+
+# whether the IGM properties should be reescaled with the redshift:
 redshift_dependent = True
+
+# whether the oscillations of the IGM conversion probability should be smoothed out:
 smoothed_IGM = False
+
+# what integration method should be used:
 method_IGM = simps
+
+# if the method_IGM is simps, the number of redshift points in the integration array:
 Nz_IGM = 101
+
+# the form of the integrand probability function:
 prob_func_IGM = norm_log
 
 #
@@ -91,21 +105,39 @@ ne_IGM [1/cm3] = 1.6e-8
 #
 # ICM flags
 #
+
+# whether the oscillations in the ICM conversion probability should be smoothed out:
 smoothed_ICM = False
+
+# the method to compute the ICM conversion probability
 method_ICM = product
+
 # prob_func_ICM = norm_log
 # Nr_ICM = 501
+
+# whether some useful arrays should be returned. Keep this "True", it saves time:
 return_arrays = True
+
+# whether the returned prepared arrays should be used in the line-of-sight integration. Keep this "True", it saves time:
 los_use_prepared_arrays = True
+
+# the line-of-sight integration method:
 los_method = quad
+
+# if the method is simps, the number of radii points in the integration array:
 # los_Nr = 501
 
 #
 # ICM properties
 #
+
+# the virial radius
 R_vir [Mpc] = 1.8
+
+# the ICM magnetic domain size
 L_ICM [kpc] = 6.08
 
+# the ICM magnetic field model
 ICM_magnetic_model = A
 # ICM_magnetic_model = custom
 # r_low [kpc] = 0.
@@ -121,7 +153,6 @@ ICM_magnetic_model = A
 #
 OmL	    =  [0.6847,   0.6, 0.75,  0.015]
 h0      =  [  0.73,   0.6,  0.8,   0.02]
-# logma =  [   -15,   -16,  -14,     0.]
 logma	=  [   -14,   -17,  -11,   0.25]
 logga	=  [   -11,  -18.,  -8.,    0.1]
 M0 	    =  [ -19.3,   -21,  -18,    0.1]
@@ -131,4 +162,3 @@ rs      =  [147.78,  120.,  160.,    1.]
 # Miscellaneous
 #
 verbose = 2
-# debug = True
