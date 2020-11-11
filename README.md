@@ -18,11 +18,11 @@ How to run
 
 In the terminal:
 
-$ python cosmo_axions_run.py -L likelihoods/ -o path/to/your/chain/output/ -i inputs/the_param_file.param -N number_of_points -w number_of_walkers
+	$ python cosmo_axions_run.py -L likelihoods/ -o path/to/your/chain/output/ -i inputs/the_param_file.param -N number_of_points -w number_of_walkers
 
 After the runs are finished, you can analyze them with:
 
-$ python cosmo_axions_analysis.py -i path/to/your/chain/output/
+	$ python cosmo_axions_analysis.py -i path/to/your/chain/output/
 
 
 Bibtex entry
