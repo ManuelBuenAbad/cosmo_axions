@@ -189,7 +189,7 @@ def load_clusters(dir_lkl):
     """
     Load clusters ADD.
     
-    return: names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls
+    return: names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls, Rvir_cls
     """
     
     # from Bonamente et al., astro-ph/0512349, Table 3.

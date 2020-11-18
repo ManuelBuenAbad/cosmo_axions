@@ -182,7 +182,7 @@ def chi2_early(rs, data=None):
 
 def chi2_clusters(pars, data=None, wanna_correct=True, fixed_Rvir=False, **kwargs):
     """
-    Computes clusters chi2. data must be equal to (names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls). **kwargs are the arguments of ADDMod.
+    Computes clusters chi2. data must be equal to (names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls, Rvir_cls). **kwargs are the arguments of ADDMod.
     """
     
     (ma, ga, OmL, h0) = pars
