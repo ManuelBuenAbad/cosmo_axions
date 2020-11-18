@@ -367,9 +367,9 @@ if __name__ == '__main__':
         omegaCMB = 2.4e-4
 
     try:
-        r_vir = params['R_vir [Mpc]']*1.e3
+        fixed_Rvir = params['fixed_Rvir']
     except KeyError:
-        r_vir = 1800.
+        fixed_Rvir = False
     
     try:
         L_ICM = params['L_ICM [kpc]']
@@ -450,7 +450,6 @@ if __name__ == '__main__':
                       # ICM
                       'ICM_effect':ICM_effect,
                       'r_low':r_low,
-                      'r_up':r_vir,
                       'L':L_ICM,
                       'smoothed_ICM':smoothed_ICM,
                       'method_ICM':method_ICM,
@@ -552,7 +551,7 @@ if __name__ == '__main__':
                            use_Pantheon=params['use_Pantheon'], pan_data=pan_data, pan_kwargs=pan_kwargs,
                            use_TDCOSMO=params['use_TDCOSMO'], ext_data=ext_data,
                            use_early=params['use_early'], early_data=early_data,
-                           use_clusters=params['use_clusters'], clusters_data=clusters_data, wanna_correct=wanna_correct, clusters_kwargs=clusters_kwargs,
+                           use_clusters=params['use_clusters'], clusters_data=clusters_data, wanna_correct=wanna_correct, fixed_Rvir=fixed_Rvir, clusters_kwargs=clusters_kwargs,
                            verbose=params['verbose'])
 
     # initial guess

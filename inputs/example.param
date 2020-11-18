@@ -131,8 +131,8 @@ los_method = quad
 # ICM properties
 #
 
-# the virial radius
-R_vir [Mpc] = 1.8
+# is the virial radius fixed to the 1.8 Mpc Perseus benchmark?
+fixed_Rvir = True
 
 # the ICM magnetic domain size
 L_ICM [kpc] = 6.08

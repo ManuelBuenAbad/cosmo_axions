@@ -180,13 +180,13 @@ def chi2_early(rs, data=None):
 
 
 
-def chi2_clusters(pars, data=None, wanna_correct=True, **kwargs):
+def chi2_clusters(pars, data=None, wanna_correct=True, fixed_Rvir=False, **kwargs):
     """
     Computes clusters chi2. data must be equal to (names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls). **kwargs are the arguments of ADDMod.
     """
     
     (ma, ga, OmL, h0) = pars
-    names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls = data
+    names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls, Rvir_cls = data
     
     chi2 = 0.
     residuals = []
@@ -203,6 +203,13 @@ def chi2_clusters(pars, data=None, wanna_correct=True, **kwargs):
         rc_inner = rc_in_cls[i]
         beta_inner = beta_cls[i]
         
+        if fixed_Rvir:
+            r_up = 1800. # [kpc] =  1.8 Mpc for all clusters, same as Perseus
+        else:
+            r_up = Rvir_cls[i] # each cluster has its own virial radius, already computed under some fiducial LCDM assumption
+        
+        print 'i={}, {}; r_up={} kpc'.format(i, names[i], r_up)
+        
         factor = ADDMod(ma, ga, z, h0, OmL,
                         ne0=ne0,
                         rc_outer=rc_outer,
@@ -210,6 +217,7 @@ def chi2_clusters(pars, data=None, wanna_correct=True, **kwargs):
                         f_inner=f_inner,
                         rc_inner=rc_inner,
                         beta_inner=beta_inner,
+                        r_up=r_up,
                         **kwargs)
         
         DA_th = dA_at_z(z, h0, OmL) * factor
@@ -243,7 +251,7 @@ def lnprob(x,
            use_Pantheon=False, pan_data=None, pan_kwargs=None,
            use_TDCOSMO=False, ext_data=None,
            use_early=False, early_data=None,
-           use_clusters=False, clusters_data=None, wanna_correct=True, clusters_kwargs=None,
+           use_clusters=False, clusters_data=None, wanna_correct=True, fixed_Rvir=False,clusters_kwargs=None,
            verbose=False):
     """
     Computes the total likelihood, as well as that for each experiment
@@ -334,7 +342,7 @@ def lnprob(x,
         # clusters
         if use_clusters:
             
-            this_chi2 = chi2_clusters((ma, ga, OmL, h0), data=clusters_data, wanna_correct=wanna_correct, **clusters_kwargs)
+            this_chi2 = chi2_clusters((ma, ga, OmL, h0), data=clusters_data, wanna_correct=wanna_correct, fixed_Rvir=fixed_Rvir, **clusters_kwargs)
             chi2 += this_chi2
             lnprob_each_chi2.append(this_chi2)
             

@@ -210,6 +210,8 @@ def load_clusters(dir_lkl):
     f_cls = np.array([])
     rc_in_cls = np.array([])
     
+    Rvir_cls = np.array([])
+    
     with open(dir_lkl+'add.txt', 'r') as filein:
         for i, line in enumerate(filein):
             if line.strip() and line.find('#') == -1:
@@ -228,9 +230,12 @@ def load_clusters(dir_lkl):
                 rc_out_cls = np.append(rc_out_cls, float(this_line[10]))
                 f_cls = np.append(f_cls, float(this_line[12]))
                 rc_in_cls = np.append(rc_in_cls, float(this_line[14]))
+                
+                Rvir_cls = np.append(Rvir_cls, float(this_line[20]))
     
     rc_out_cls = (DA_cls*1.e3)*(_rads_over_arcsec_*rc_out_cls) # converting from arcsec to kpc
     rc_in_cls = (DA_cls*1.e3)*(_rads_over_arcsec_*rc_in_cls) # converting from arcsec to kpc
+    Rvir_cls = (DA_cls*1.e3)*(_rads_over_arcsec_*Rvir_cls) # converting from arcsec to kpc
     
     sig_p = sqrt(DA_cls*DA_cls*((stat**2.).sum() + sys_p.sum()**2.) + p_err_cls**2.)
     sig_m = sqrt(DA_cls*DA_cls*((stat**2.).sum() + sys_n.sum()**2.) + n_err_cls**2.)
@@ -238,4 +243,4 @@ def load_clusters(dir_lkl):
     err_cls = (sig_p + sig_m)/2.
     asymm_cls = (sig_p - sig_m)/(sig_p + sig_m)
     
-    return (names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls)
+    return (names, z_cls, DA_cls, err_cls, asymm_cls, ne0_cls, beta_cls, rc_out_cls, f_cls, rc_in_cls, Rvir_cls)
