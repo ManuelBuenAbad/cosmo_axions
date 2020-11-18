@@ -208,8 +208,6 @@ def chi2_clusters(pars, data=None, wanna_correct=True, fixed_Rvir=False, **kwarg
         else:
             r_up = Rvir_cls[i] # each cluster has its own virial radius, already computed under some fiducial LCDM assumption
         
-        print 'i={}, {}; r_up={} kpc'.format(i, names[i], r_up)
-        
         factor = ADDMod(ma, ga, z, h0, OmL,
                         ne0=ne0,
                         rc_outer=rc_outer,
