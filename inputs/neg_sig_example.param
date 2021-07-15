@@ -1,0 +1,167 @@
+###########################################################
+#                     PARAMETERS FILE                     #
+###########################################################
+
+###############
+# likelihoods #
+###############
+
+#
+# TDCOSMO: original 74.5+5.6-6.1, will use symmetric error bar
+#
+use_TDCOSMO = True
+h_TD = 0.745
+h_TD_sig = 0.0585
+# uncomment below to use fake 1% here
+# h_TD_sig = 0.00745
+
+#
+# SN anchoring from Riess 2016
+#
+use_SH0ES = True
+aB = 0.71273
+aBsig = 0.00176
+anchor_lkl = lstAnchor.csv
+
+#
+# Early Universe data, from Planck 2018
+#
+use_early = False
+rsdrag_mean = 147.09
+rsdrag_sig = 0.26
+
+#
+# Pantheon SNe
+#
+use_Pantheon = True
+Pantheon_lkl = lcparam_full_long.dat
+Pantheon_covmat = sys_full_long.dat
+Pantheon_subset = 1048
+# SNe photon energy
+omegaSN [eV] = 1.
+
+#
+# BAO-BOSS DR12
+#
+use_BOSSDR12 = True
+BOSSDR12_meas = BAO_consensus_results_dM_Hz.txt
+BOSSDR12_covmat = BAO_consensus_covtot_dM_Hz.txt
+BOSSDR12_rsfid = 147.78
+
+#
+# low-z DR7 MGS + 6DFs
+# data is given as dV/rs, so no fiducial is needed
+#
+use_BAOlowz = True
+BAOlowz_lkl = bao_smallz_2014.txt
+
+#
+# Bonamente et al. cluster data
+#
+use_clusters = True
+
+# whether we should take into account corrections from asymmetric errors:
+wanna_correct = True
+
+# clusters SZ & X-ray photon energies:
+omegaX [keV] = 5.
+omegaCMB [eV] = 2.4e-4
+
+# whether we use ICM effect:
+ICM_effect = True
+
+###################
+#       IGM       #
+###################
+#
+# IGM flags:
+#
+
+# whether the IGM properties should be reescaled with the redshift:
+redshift_dependent = True
+
+# whether the oscillations of the IGM conversion probability should be smoothed out:
+smoothed_IGM = False
+
+# what integration method should be used:
+method_IGM = simps
+
+# if the method_IGM is simps, the number of redshift points in the integration array:
+Nz_IGM = 101
+
+# the form of the integrand probability function:
+prob_func_IGM = norm_log
+
+#
+# IGM properties today:
+#
+B_IGM [nG] = 1.
+s_IGM [Mpc] = 1.
+ne_IGM [1/cm3] = 1.6e-8
+
+###################
+#       ICM       #
+###################
+#
+# ICM flags
+#
+
+# whether the oscillations in the ICM conversion probability should be smoothed out:
+smoothed_ICM = False
+
+# the method to compute the ICM conversion probability
+method_ICM = product
+
+# prob_func_ICM = norm_log
+# Nr_ICM = 501
+
+# whether some useful arrays should be returned. Keep this "True", it saves time:
+return_arrays = True
+
+# whether the returned prepared arrays should be used in the line-of-sight integration. Keep this "True", it saves time:
+los_use_prepared_arrays = True
+
+# the line-of-sight integration method:
+los_method = quad
+
+# if the method is simps, the number of radii points in the integration array:
+# los_Nr = 501
+
+#
+# ICM properties
+#
+
+# is the virial radius fixed to the 1.8 Mpc Perseus benchmark?
+fixed_Rvir = True
+
+# the ICM magnetic domain size
+L_ICM [kpc] = 6.08
+
+# the ICM magnetic field model
+ICM_magnetic_model = A
+# ICM_magnetic_model = custom
+# r_low [kpc] = 0.
+# B_ref [muG] = 10.
+# r_ref [kpc] = 0.
+# eta = 0.5
+
+# signal strength (either +1 or -1)
+signal_strength = -1.
+
+###################
+#    parameters   #
+###################
+#
+# param = [init, low, up, sigma]
+#
+OmL	    =  [0.6847,   0.6, 0.75,  0.015]
+h0      =  [  0.73,   0.6,  0.8,   0.02]
+logma	=  [   -14,   -17,  -11,   0.25]
+logga	=  [   -11,  -18.,  -8.,    0.1]
+M0      =  [ -19.3,   -21,  -18,    0.1]
+rs      =  [147.78,  120.,  160.,    1.]
+
+#
+# Miscellaneous
+#
+verbose = 2
