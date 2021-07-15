@@ -39,7 +39,7 @@ def Ekernel(OmL, z):
 
 def H_at_z(z, h0, OmL, unit='Mpc'):
     """
-    Hubble at z 
+    Hubble at z
 
     :param z: redshift
     :param h0:  H in [100*km/s/Mpc]
@@ -113,7 +113,8 @@ def LumMod(ma, g, z, B, mg, h, OmL,
            redshift_dependent=True,
            method='simps',
            prob_func='norm_log',
-           Nz=501):    
+           Nz=501,
+           mu=1.):
     """
     Here we use a simple function to modify the intrinsic luminosity of the SN
     so that mu_th = mu_STD - LumMod(). This is the one that takes into account the redshift
@@ -134,8 +135,8 @@ def LumMod(ma, g, z, B, mg, h, OmL,
     -------
     res: scalar, delta M in the note
 
-    """    
-    
+    """
+
     try:
         # 2.5log10(L/L(1e-5Mpc))
         res = 2.5 * log10(igm_Psurv(ma, g, z,
@@ -150,7 +151,8 @@ def LumMod(ma, g, z, B, mg, h, OmL,
                                     redshift_dependent=redshift_dependent,
                                     method=method,
                                     prob_func=prob_func,
-                                    Nz=Nz))
+                                    Nz=Nz,
+                                    mu=mu))
 
     except Warning:
         print('ma=%e, g=%e, y=%e' % (ma, g, y))
@@ -160,10 +162,10 @@ def LumMod(ma, g, z, B, mg, h, OmL,
 
 
 def ADDMod(ma, g, z, h, OmL,
-           
+
            omegaX=1.e4,
            omegaCMB=2.4e-4,
-           
+
            # IGM
            sIGM=1.,
            BIGM=1.,
@@ -173,7 +175,7 @@ def ADDMod(ma, g, z, h, OmL,
            method_IGM='simps',
            prob_func_IGM='norm_log',
            Nz_IGM=501,
-           
+
            # ICM
            ICM_effect=False,
            r_low = 0.,
@@ -187,12 +189,14 @@ def ADDMod(ma, g, z, h, OmL,
            los_method='quad',
            los_use_prepared_arrays=False,
            los_Nr=501,
-           
+
+           mu=1.,
+
            # B_icm
            B_ref=10.,
            r_ref=0.,
            eta=0.5,
-           
+
            #ne_2beta
            ne0=0.01,
            rc_outer=100.,
@@ -203,14 +207,15 @@ def ADDMod(ma, g, z, h, OmL,
     """
     Function that modifies the ADDs from clusters, written in Eq. 12 of Manuel's notes.
     """
-    
+
     if ICM_effect:
-        
+
         PICM = icm_los_Psurv(ma, g, r_low, r_up, ne_2beta, B_icm,
                              L=L,
                              omega_Xrays=omegaX/1000.,
                              axion_ini_frac=0.,
                              smoothed=smoothed_ICM, method=method_ICM, return_arrays=return_arrays, prob_func=prob_func_ICM, Nr=Nr_ICM, los_method=los_method, los_use_prepared_arrays=los_use_prepared_arrays, los_Nr=los_Nr,
+                             mu=mu,
                              # B_icm
                              B_ref=B_ref, r_ref=r_ref, eta=eta,
                              # ne_2beta
@@ -235,7 +240,8 @@ def ADDMod(ma, g, z, h, OmL,
                       redshift_dependent=redshift_dependent,
                       method=method_IGM,
                       prob_func=prob_func_IGM,
-                      Nz=Nz_IGM)
+                      Nz=Nz_IGM,
+                      mu=mu)
 
     Pgg_CMB = igm_Psurv(ma, g, z,
                       s=sIGM,
@@ -249,6 +255,7 @@ def ADDMod(ma, g, z, h, OmL,
                       redshift_dependent=redshift_dependent,
                       method=method_IGM,
                       prob_func=prob_func_IGM,
-                      Nz=Nz_IGM)
+                      Nz=Nz_IGM,
+                      mu=mu)
 
     return Pgg_CMB**2. / (Pgg_X * Pg)

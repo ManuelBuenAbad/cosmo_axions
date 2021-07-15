@@ -51,10 +51,10 @@ except ImportError:
 
 def pltpath(dir, head='', ext='.pdf'):
     path = os.path.join(dir, 'plots')
-    
+
     run_name = str(dir).rstrip('/')
     run_name = run_name.split('/')[-1]
-    
+
     try:
         os.makedirs(path)
     except OSError as e:
@@ -92,9 +92,9 @@ def fill_mcmc_parameters(path):
                 try:
                     res[key] = float(words[1])
                 except:
-                    
+
                     # print line, words, key
-                    
+
                     res[key] = (words[1]).strip()
                     # not a number, start parsing
                     if res[key][0] == '[' and res[key][-1] == ']':
@@ -210,7 +210,7 @@ if __name__ == '__main__':
         raise Exception('Do you want SH0ES? Please check input.param\
                         and specify the use_SH0ES parameter with\
                         True or False')
-    
+
     try:
         params['use_early']
     except KeyError:
@@ -260,7 +260,7 @@ if __name__ == '__main__':
         raise Exception('Do you want clusters data? Please check input.param\
                         and specify the use_clusters parameter with\
                         True or False')
-    
+
     try:
         wanna_correct = params['wanna_correct']
     except KeyError:
@@ -270,32 +270,32 @@ if __name__ == '__main__':
         redshift_dependent = params['redshift_dependent']
     except KeyError:
         redshift_dependent = True
-    
+
     try:
         smoothed_IGM = params['smoothed_IGM']
     except KeyError:
         smoothed_IGM = False
-    
+
     try:
         method_IGM = params['method_IGM']
     except KeyError:
         method_IGM = 'simps'
-    
+
     try:
         Nz_IGM = params['Nz_IGM']
     except KeyError:
         Nz_IGM = 501
-    
+
     try:
         prob_func_IGM = params['prob_func_IGM']
     except KeyError:
         prob_func_IGM = 'norm_log'
-    
+
     try:
         omegaSN = params['omegaSN [eV]']
     except KeyError:
         omegaSN = 1.
-    
+
     try:
         B_IGM = params['B_IGM [nG]']
     except KeyError:
@@ -310,47 +310,47 @@ if __name__ == '__main__':
         s_IGM = params['s_IGM [Mpc]']
     except KeyError:
         s_IGM = 1.
-    
+
     try:
         ICM_effect = params['ICM_effect']
     except KeyError:
         ICM_effect = False
-    
+
     try:
         smoothed_ICM = params['smoothed_ICM']
     except KeyError:
         smoothed_ICM = True
-    
+
     try:
         method_ICM = params['method_ICM']
     except KeyError:
         method_ICM = 'product'
-    
+
     try:
         return_arrays = params['return_arrays']
     except KeyError:
         return_arrays = False
-    
+
     try:
         prob_func_ICM = params['prob_func_ICM']
     except KeyError:
         prob_func_ICM = 'norm_log'
-    
+
     try:
         Nr_ICM = params['Nr_ICM']
     except KeyError:
         Nr_ICM = 501
-    
+
     try:
         los_method = params['los_method']
     except KeyError:
         los_method = 'quad'
-    
+
     try:
         los_use_prepared_arrays = params['los_use_prepared_arrays']
     except KeyError:
         los_use_prepared_arrays = False
-    
+
     try:
         los_Nr = params['los_Nr']
     except KeyError:
@@ -360,7 +360,7 @@ if __name__ == '__main__':
         omegaX = params['omegaX [keV]']*1.e3
     except KeyError:
         omegaX = 1.e4
-    
+
     try:
         omegaCMB = params['omegaCMB [eV]']
     except KeyError:
@@ -370,59 +370,64 @@ if __name__ == '__main__':
         fixed_Rvir = params['fixed_Rvir']
     except KeyError:
         fixed_Rvir = False
-    
+
     try:
         L_ICM = params['L_ICM [kpc]']
     except KeyError:
         L_ICM = L_avg
-    
+
     try:
         ICM_magnetic_model = params['ICM_magnetic_model']
     except KeyError:
         ICM_magnetic_model = 'A'
-    
+
     if ICM_magnetic_model == 'A':
-        
+
         r_low = 10.
         B_ref = 25.
         r_ref = 0.
         eta = 0.7
-    
+
     elif ICM_magnetic_model == 'B':
-        
+
         r_low = 0.
         B_ref = 7.5
         r_ref = 25.
         eta = 0.5
-        
+
     elif ICM_magnetic_model == 'C':
-        
+
         r_low = 0.
         B_ref = 4.7
         r_ref = 0.
         eta = 0.5
-        
+
     else:
-        
+
         try:
             r_low = params['r_low [kpc]']
         except KeyError:
             r_low = 0.
-        
+
         try:
             B_ref = params['B_ref [muG]']
         except KeyError:
             B_ref = 10.
-        
+
         try:
             r_ref = params['r_ref [kpc]']
         except KeyError:
             r_ref = 0.
-        
+
         try:
             eta = params['eta']
         except KeyError:
             eta = 0.5
+
+    try:
+        mu = params['signal_strength']
+    except KeyError:
+        mu = 1.
 
     # consolidating the keyword parameters for some likelihoods
     pan_kwargs = {'B':B_IGM,
@@ -434,8 +439,9 @@ if __name__ == '__main__':
                   'redshift_dependent':redshift_dependent,
                   'method':method_IGM,
                   'prob_func':prob_func_IGM,
-                  'Nz':Nz_IGM}
-    
+                  'Nz':Nz_IGM,
+                  'mu':mu}
+
     clusters_kwargs = {'omegaX':omegaX,
                       'omegaCMB':omegaCMB,
                       # IGM
@@ -459,6 +465,7 @@ if __name__ == '__main__':
                       'los_method':los_method,
                       'los_use_prepared_arrays':los_use_prepared_arrays,
                       'los_Nr':los_Nr,
+                      'mu':mu,
                       'B_ref':B_ref,
                       'r_ref':r_ref,
                       'eta':eta}
@@ -467,9 +474,9 @@ if __name__ == '__main__':
 # load up likelihoods
 # that are read from a file
 ##########################
-    
+
     experiments = [] # a list of shorthand names for the experiments
-    
+
     # load SH0ES
     if params['use_SH0ES'] is True:
         shoes_data = data.load_shoes(dir_lkl,
@@ -492,7 +499,7 @@ if __name__ == '__main__':
     else:
         pan_data = None
 
-   
+
     # load BOSS DR12
     if params['use_BOSSDR12'] is True:
         boss_data = data.load_boss_dr12(dir_lkl,
@@ -511,14 +518,14 @@ if __name__ == '__main__':
         experiments.append('bao')
     else:
         bao_data = None
-    
+
     # load H0 data
     if params['use_TDCOSMO'] is True:
         ext_data = (params['h_TD'], params['h_TD_sig'])
         experiments.append('tdcosmo')
     else:
         ext_data = None
-    
+
     # load rsdrag data
     if params['use_early'] is True:
         early_data = (params['rsdrag_mean'], params['rsdrag_sig'])
@@ -542,7 +549,7 @@ if __name__ == '__main__':
         """
         Defining lnprob at the top level, to avoid Pickle errors.
         """
-        
+
         return chi2.lnprob(x,
                            keys=keys, keys_fixed=keys_fixed, params=params,
                            use_SH0ES=params['use_SH0ES'], shoes_data=shoes_data,
@@ -589,7 +596,7 @@ if __name__ == '__main__':
     path = os.path.join(directory, filename)
     backend = emcee.backends.HDFBackend(path)
     backend.reset(nwalkers, ndim)
-    
+
     # the names and types of the blobs
     dtype = [(exper, float) for exper in experiments]
 
@@ -611,14 +618,14 @@ if __name__ == '__main__':
                                             pool=pool,
                                             blobs_dtype=dtype)
             sampler.reset()
-            
+
             try:
                 result = sampler.run_mcmc(p0, chainslength, progress=True)
-            
+
             except Warning:
                 print('p0=%s, chainslength=%s' % (p0, chainslength))
                 raise
-            
+
             pool.terminate()
     else:
         # initialize sampler
@@ -628,7 +635,7 @@ if __name__ == '__main__':
                                         backend=backend,
                                         blobs_dtype=dtype)
         sampler.reset()
-        
+
         result = sampler.run_mcmc(p0, chainslength, progress=True)
 
     print("Mean acceptance fraction: {0:.3f}".format(

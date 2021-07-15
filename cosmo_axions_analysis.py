@@ -101,7 +101,7 @@ if __name__ == '__main__':
                            show_titles=True,
                            title_kwargs={"fontsize": 12})
     axes = np.array(figure.axes).reshape((dim_of_param, dim_of_param))
-    
+
     plt.savefig(pltpath(directory))
 
     # focusing on ma-ga
@@ -124,7 +124,7 @@ if __name__ == '__main__':
 
     p = (figure.axes)[2].collections[0].get_paths()[0]
     v = p.vertices
-    
+
     # saving the points of the 95% C.R. contour
     np.savetxt(pltpath(directory, head='corner_pts', ext='.txt'), v)
 

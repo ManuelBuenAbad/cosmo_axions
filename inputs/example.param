@@ -145,6 +145,9 @@ ICM_magnetic_model = A
 # r_ref [kpc] = 0.
 # eta = 0.5
 
+# signal strength (either +1 or -1)
+signal_strength = 1.
+
 ###################
 #    parameters   #
 ###################
