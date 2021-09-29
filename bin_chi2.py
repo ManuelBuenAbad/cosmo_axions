@@ -171,16 +171,8 @@ if __name__ == '__main__':
     plt.contour(ma_arr, ga_arr, delta_arr, levels=[2.29141, 6.15823], colors=['cyan', 'orange'], linestyles=[':', ':'])
     plt.savefig(pltpath(directory, head='delta_chi2_contours'))
 
-    # the points of the 2-sigma (95.45% C.L.) contour
-    cs = plt.contour(ma_arr, ga_arr, delta_arr, levels=[6.15823])
+    # the points of the 2-sigma (95% C.L.) contour for a one-sided test (2.705543 chi2 threshold)
+    cs = plt.contour(ma_arr, ga_arr, delta_arr, levels=[2.705543])
     p = cs.collections[0].get_paths()[0]
     v = p.vertices
-    np.savetxt(pltpath(directory, head='2sigma_pts', ext='.txt'), v)
-
-    # the points of the 95% C.L. contour
-    cs2 = plt.contour(ma_arr, ga_arr, delta_arr, levels=[5.99146])
-    p2 = cs2.collections[0].get_paths()[0]
-    v2 = p2.vertices
-    np.savetxt(pltpath(directory, head='95CL_pts', ext='.txt'), v2)
-
-# 2.705543
+    np.savetxt(pltpath(directory, head='one-side_95CL_pts', ext='.txt'), v)
