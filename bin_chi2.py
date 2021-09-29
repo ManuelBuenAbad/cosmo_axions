@@ -182,3 +182,5 @@ if __name__ == '__main__':
     p2 = cs2.collections[0].get_paths()[0]
     v2 = p2.vertices
     np.savetxt(pltpath(directory, head='95CL_pts', ext='.txt'), v2)
+
+# 2.705543
