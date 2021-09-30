@@ -37,14 +37,15 @@ if __name__ == '__main__':
     warnings.filterwarnings('error', 'overflow encountered')
     warnings.filterwarnings('error', 'invalid value encountered')
     argv = sys.argv[1:]
-    help_msg = 'python %s -c <chain_folder> -b <bins>' % (
+    help_msg = 'python %s -c <chain_folder> -b <bins> -n <negative_signal_chain_folder>' % (
         sys.argv[0])
     try:
-        opts, args = getopt.getopt(argv, 'h:c:b:')
+        opts, args = getopt.getopt(argv, 'h:c:b:n:')
     except getopt.GetoptError:
         raise Exception(help_msg)
     flgc = False
     flgb = False
+    flgn = False
     for opt, arg in opts:
         if opt == '-h':
             raise Exception(help_msg)
@@ -54,6 +55,9 @@ if __name__ == '__main__':
         elif opt == '-b':
             bins = int(arg)
             flgb = True
+        elif opt == '-n':
+            neg_dir = arg
+            flgn = True
     if not (flgc and flgb):
         raise Exception(help_msg)
 
@@ -64,9 +68,6 @@ if __name__ == '__main__':
     f = f['mcmc']
     keys = f.keys()
     print keys
-
-    #idx = np.random.randint(100)
-    #print f['chain'][idx,0], -2*f['log_prob'][idx,0], f['blobs']['pantheon'][idx,0]
 
     pts = np.array(f['chain']) # the points
     pts = pts.reshape(-1, 6)

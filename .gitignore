@@ -6,3 +6,4 @@ local_test*
 output/test*
 *.pyc
 compare_w_git/**
+neg_chains.ipynb
