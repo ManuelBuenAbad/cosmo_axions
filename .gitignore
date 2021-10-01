@@ -3,7 +3,7 @@
 \#*#
 __pycache__
 local_test*
-output/test*
+output/test/**
 *.pyc
 compare_w_git/**
 neg_chains.ipynb
