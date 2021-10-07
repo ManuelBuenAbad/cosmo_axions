@@ -223,6 +223,7 @@ def ADDMod(ma, g, z, h, OmL,
 
         Pg, Pa = PICM, 1.-PICM
         IaIg = Pa/Pg
+        # TODO: regularize 1-PICM?? (prevent negative values?)
 
     else:
         Pg = 1.

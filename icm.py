@@ -123,6 +123,12 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
 
     A = (2./3)*(1 + axion_ini_frac) # equilibration constant
 
+    # updating axion-photon coupling according to signal strength
+    if np.sign(mu) > 0:
+        gs = g # real case: g^2 is positive
+    else:
+        gs = g * 1j # imaginary branch -> g^2 is negative
+
     # reading the parameter names of ne_fn and B_fn
     ne_pars = getargspec(ne_fn)[0]
     B_pars = getargspec(B_fn)[0]
@@ -141,7 +147,7 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
     mg = lambda rr: omega_plasma(ne(rr)) # photon plasma mass [eV]
     Bicm = lambda rr: B_fn(rr, ne_fn, **kwargs) # ICM magnetic field [muG]
 
-    P = lambda rr: mu*P0(ma, g, L/1000., B=Bicm(rr)*1000., omega=omega_Xrays*1000., mg=mg(rr), smoothed=smoothed) # conversion probability in domain located at radius rr from center of cluster
+    P = lambda rr: P0(ma, gs, L/1000., B=Bicm(rr)*1000., omega=omega_Xrays*1000., mg=mg(rr), smoothed=smoothed) # conversion probability in domain located at radius rr from center of cluster
 
     if method == 'product':
 
@@ -195,7 +201,6 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
 
         Pconv = (1.-A)*(1.-exp(argument)) # conversion probability
         Psurv = 1. - Pconv # survival probability
-        # A + (1.-A)*exp(argument) # old return
 
         return Psurv
 

@@ -99,10 +99,16 @@ def igm_Psurv(ma, g, z,
     A = (2./3)*(1 + axion_ini_frac) # equilibration constant
     dH = (c0*1.e-3)/(100.*h) # Hubble distance [Mpc]
 
+    # updating axion-photon coupling according to signal strength
+    if np.sign(mu) > 0:
+        gs = g # real case: g^2 is positive
+    else:
+        gs = g * 1j # imaginary branch -> g^2 is negative
+
     if redshift_dependent:
 
         # z-dependent probability of conversion in one domain
-        Pga = lambda zz: mu*P0(ma, g, s/(1+zz), B=B*(1+zz)**2., omega=omega*(1.+zz), mg=mg*(1+zz)**1.5, smoothed=smoothed)
+        Pga = lambda zz: P0(ma, gs, s/(1+zz), B=B*(1+zz)**2., omega=omega*(1.+zz), mg=mg*(1+zz)**1.5, smoothed=smoothed)
 
         if method == 'simps':
 
@@ -151,11 +157,10 @@ def igm_Psurv(ma, g, z,
     else:
 
         y = DC(z, h=h, Omega_L=Omega_L) # computing comoving distance
-        P = mu*P0(ma, g, s, B=B, omega=omega, mg=mg, smoothed=smoothed) # z-independent probability conversion in one domain
+        P = P0(ma, gs, s, B=B, omega=omega, mg=mg, smoothed=smoothed) # z-independent probability conversion in one domain
         argument = -1.5*(y/s)*P # argument of exponential
 
     Pconv = (1.-A)*(1.-exp(argument))
     Psurv = 1. - Pconv
-    # A + (1-A)*exp(argument) # old return
 
     return Psurv
