@@ -40,7 +40,7 @@ if __name__ == '__main__':
     help_msg = 'python %s -c <chain_folder> -b <bins> -n <negative_signal_chain_folder>' % (
         sys.argv[0])
     try:
-        opts, args = getopt.getopt(argv, 'h:c:b:n:')
+        opts, args = getopt.getopt(argv, 'h:c:b:n:v')
     except getopt.GetoptError:
         raise Exception(help_msg)
     flgc = False
@@ -58,6 +58,8 @@ if __name__ == '__main__':
         elif opt == '-n':
             neg_dir = arg
             flgn = True
+        elif opt == '-v':
+            verbose = True
     if not (flgc and flgb):
         raise Exception(help_msg)
 
@@ -67,13 +69,13 @@ if __name__ == '__main__':
 
     f = f['mcmc']
     keys = f.keys()
-    print keys
+
+    if verbose:
+        print "chain keys:", keys
 
     pts = np.array(f['chain']) # the points
     pts = pts.reshape(-1, 6)
     
-#     print pts.shape
-
     chi2_tot = np.array(f['log_prob'])
     chi2_tot *= -2
     chi2_tot = chi2_tot.reshape(-1)
@@ -88,13 +90,16 @@ if __name__ == '__main__':
     bf_chi2, bf_idx = min(chi2_tot), chi2_tot.argmin() # the best fit chi2 and where it is
     each_sum = sum([each_chi2[exper][bf_idx] for exper in experiments]) # the sum of the chi2 from each experiment at the best fit point
 
-    print "chi2 best fit: {} = {}".format(bf_chi2, each_sum) # sanity check
+    if verbose:
+        print "chain chi2 best fit: {} = {}".format(bf_chi2, each_sum) # sanity check
+        print "individual experiments chi2 best fit:\n\t{}".format({exper:each_chi2[exper][bf_idx] for exper in experiments})
     
     # if we passed a chain with negative signal strength, we need to read that data
     
     if flgn:
         
-        print "Preparing to read the chain with negative strength signal, located in {}".format(neg_dir)
+        if verbose:
+            print "Preparing to read the chain with negative strength signal, located in {}".format(neg_dir)
         
         neg_path = neg_dir+'chain_1.h5'
         nf = h5py.File(neg_path, 'r')
@@ -104,8 +109,6 @@ if __name__ == '__main__':
         
         npts = np.array(nf['chain'])
         npts = npts.reshape(-1, 6)
-        
-#         print npts.shape
         
         nchi2_tot = np.array(nf['log_prob'])
         nchi2_tot *= -2
@@ -121,7 +124,9 @@ if __name__ == '__main__':
         nbf_chi2, nbf_idx = min(nchi2_tot), nchi2_tot.argmin() # the best fit chi2 and where it is
         neach_sum = sum([neach_chi2[nexper][nbf_idx] for nexper in nexperiments]) # the sum of the chi2 from each experiment at the best fit point
         
-        print "chi2 best fit for negative signal strength: {} = {}".format(nbf_chi2, neach_sum) # sanity check
+        if verbose:
+            print "chi2 best fit for negative signal strength: {} = {}".format(nbf_chi2, neach_sum) # sanity check
+            print "individual experiments chi2 best fit for negative signal strength:\n\t{}".format({nexper:neach_chi2[nexper][nbf_idx] for nexper in nexperiments})
     
     #---------------------------------
     # PART 1: ga & ma: points and bins
@@ -143,8 +148,6 @@ if __name__ == '__main__':
     # mesh of (ma, ga) parameter space blocks
     mesh_ga, mesh_ma = np.meshgrid(block_ga, block_ma, indexing='ij')
     
-#     print edges_ma.shape, block_ma.shape
-    
     
     #---------------------
     # PART 2: chi2(ma, ga)
@@ -159,7 +162,8 @@ if __name__ == '__main__':
 
     wheres_2D = {} # those location indices whose (ma, ga) parameter values are within the bin
     
-    print "Computing 2D chi2(ma, ga)"
+    if verbose:
+        print "Computing 2D chi2(ma, ga)"
     
     for i in tqdm(range(len(edges_ga)-1)):
         for j in range(len(edges_ma)-1):
@@ -202,10 +206,6 @@ if __name__ == '__main__':
 
     ma_ga_chi2 = np.array(ma_ga_chi2)
     
-#     print ma_ga_chi2.shape
-#     print ma_ga_chi2[:,0:2].shape
-#     print ma_ga_chi2[:,2].shape
-    # interpolating over the data
     chi2_ma_ga_fn = lndi(ma_ga_chi2[:,0:2], ma_ga_chi2[:,2]) # since data is not a uniform grid, we need to use LinearNDInterpolator
     
     
@@ -220,7 +220,8 @@ if __name__ == '__main__':
     idx_mins_1D = [] # the index of the min chi2 in the 1D space
     ma_chi2 = [] # the doubles (ma, min_chi2) only for those bins where the value is well defined
     
-    print "Computing 1D chi2(ma)"
+    if verbose:
+        print "Computing 1D chi2(ma)"
     
     for i in tqdm(range(len(edges_ma)-1)):
         
@@ -230,8 +231,6 @@ if __name__ == '__main__':
         
         # the chi2s in that bin
         chi2_i_block =  chi2_tot[where]
-        
-#         print where
         
         # appending minima and indices
         if len(chi2_i_block)>0:
@@ -262,7 +261,6 @@ if __name__ == '__main__':
     ma_chi2 = np.array(ma_chi2)
 
     # interpolating over the data
-#     print ma_chi2.shape
     chi2_ma_fn = interp1d(ma_chi2[:,0], ma_chi2[:,-1], fill_value="extrapolate")
     
     
@@ -283,7 +281,8 @@ if __name__ == '__main__':
         nma_chi2 = [] # the doubles (ma, min_chi2) only for those bins where the value is well defined
         
         
-        print "Computing 1D chi2(ma), for negative signal strength"
+        if verbose:
+            print "Computing 1D chi2(ma), for negative signal strength"
         
         for i in tqdm(range(len(edges_ma)-1)): # NOTE: it has to be the same mass bins!!!
             
@@ -324,6 +323,9 @@ if __name__ == '__main__':
         
         # interpolating over the data
         nchi2_ma_fn = interp1d(nma_chi2[:,0], nma_chi2[:,-1], fill_value="extrapolate")
+	
+        if verbose:
+            print "block-wise chi2 bestfit for negative signal strength\n", nma_chi2
     
     
     # plot
@@ -360,5 +362,5 @@ if __name__ == '__main__':
     
     if flgn: # make the same plot but without the chi2_min from the negative signal strength
         plt.contour(ma_arr, ga_arr, (chi2_ma_ga_fn(ma_gr, ga_gr) - chi2_ma_fn(ma_gr)), levels=[2.705543], colors=['red'], linestyles=['--'])
-    
+
     plt.savefig(pltpath(directory, head='delta_chi2_contour'+neg_str))
