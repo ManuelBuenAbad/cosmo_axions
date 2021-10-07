@@ -141,7 +141,7 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
     mg = lambda rr: omega_plasma(ne(rr)) # photon plasma mass [eV]
     Bicm = lambda rr: B_fn(rr, ne_fn, **kwargs) # ICM magnetic field [muG]
 
-    P = lambda rr: P0(ma, g, L/1000., B=Bicm(rr)*1000., omega=omega_Xrays*1000., mg=mg(rr), smoothed=smoothed) # conversion probability in domain located at radius rr from center of cluster
+    P = lambda rr: mu*P0(ma, g, L/1000., B=Bicm(rr)*1000., omega=omega_Xrays*1000., mg=mg(rr), smoothed=smoothed) # conversion probability in domain located at radius rr from center of cluster
 
     if method == 'product':
 
@@ -193,7 +193,7 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
         integral = quad(integrand, r_ini, r_fin)[0]
         argument = integral/L
 
-        Pconv = mu*(1.-A)*(1.-exp(argument)) # conversion probability
+        Pconv = (1.-A)*(1.-exp(argument)) # conversion probability
         Psurv = 1. - Pconv # survival probability
         # A + (1.-A)*exp(argument) # old return
 

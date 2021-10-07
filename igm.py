@@ -102,7 +102,7 @@ def igm_Psurv(ma, g, z,
     if redshift_dependent:
 
         # z-dependent probability of conversion in one domain
-        Pga = lambda zz: P0(ma, g, s/(1+zz), B=B*(1+zz)**2., omega=omega*(1.+zz), mg=mg*(1+zz)**1.5, smoothed=smoothed)
+        Pga = lambda zz: mu*P0(ma, g, s/(1+zz), B=B*(1+zz)**2., omega=omega*(1.+zz), mg=mg*(1+zz)**1.5, smoothed=smoothed)
 
         if method == 'simps':
 
@@ -151,10 +151,10 @@ def igm_Psurv(ma, g, z,
     else:
 
         y = DC(z, h=h, Omega_L=Omega_L) # computing comoving distance
-        P = P0(ma, g, s, B=B, omega=omega, mg=mg, smoothed=smoothed) # z-independent probability conversion in one domain
+        P = mu*P0(ma, g, s, B=B, omega=omega, mg=mg, smoothed=smoothed) # z-independent probability conversion in one domain
         argument = -1.5*(y/s)*P # argument of exponential
 
-    Pconv = mu*(1.-A)*(1.-exp(argument))
+    Pconv = (1.-A)*(1.-exp(argument))
     Psurv = 1. - Pconv
     # A + (1-A)*exp(argument) # old return
 
