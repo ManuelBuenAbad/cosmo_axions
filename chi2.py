@@ -16,6 +16,9 @@ import data
 ##########################
 
 
+huge = 1.e50 # huge number
+
+
 def is_Out_of_Range(x, keys, params):
     """
     Returns a Boolean type indicating whether the current
@@ -140,8 +143,11 @@ def chi2_Pantheon(x, data=None, **kwargs):
 
         residuals.append(muLCDM(z, h0, OmL) - m_meas + M0 - change)
 
-    L_residuals = la.solve_triangular(PAN_cov, residuals, lower=True, check_finite=False)
-    chi2 = np.dot(L_residuals, L_residuals)
+    try:
+        L_residuals = la.solve_triangular(PAN_cov, residuals, lower=True, check_finite=False)
+        chi2 = np.dot(L_residuals, L_residuals)
+    except:
+        chi2 = huge
 
     return chi2
 
@@ -226,12 +232,17 @@ def chi2_clusters(pars, data=None, wanna_correct=True, fixed_Rvir=False, **kwarg
 
     correction = 1.
 
-    if wanna_correct:
-        correction += -2.*asymm_cls * (residuals/err_cls) + 5.*asymm_cls**2. * (residuals/err_cls)**2.
+    try:
+        if wanna_correct:
+            correction += -2.*asymm_cls * (residuals/err_cls) + 5.*asymm_cls**2. * (residuals/err_cls)**2.
 
-    terms = ((residuals / err_cls)**2.)*correction
+        terms = ((residuals / err_cls)**2.)*correction
 
-    chi2 = terms.sum()
+        chi2 = terms.sum()
+
+    except:
+        chi2 = huge
+
 
     return chi2
 

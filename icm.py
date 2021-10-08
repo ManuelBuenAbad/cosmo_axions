@@ -15,6 +15,7 @@ from scipy.interpolate import interp1d
 from inspect import getargspec
 from ag_probs import omega_plasma, P0
 
+huge = 1.e50 # a huge number
 
 # FUNCTIONS:
 
@@ -156,16 +157,27 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
         P_Arr = P(r_Arr) # array of conversion probabilities
         factors = 1. - 1.5*P_Arr # the factors in each domain
 
-        total_prod = factors.prod()
-        partial_prods = cumprod(factors[::-1])[::-1]
+        try:
+            total_prod = factors.prod()
+            partial_prods = cumprod(factors[::-1])[::-1]
+        except:
+            total_prod = huge
+            partial_prods = cumprod(factors[::-1])[::-1]
+            partial_prods = np.where(partial_prods > huge, huge, partial_prods)
+
+        Pconv = (1.-A)*(1. - total_prod)
+        Psurv = 1. - Pconv
+
+        Pconv_part = (1.-A)*(1. - partial_prods)
+        Psurv_part = 1. - Pconv_part
 
         if return_arrays: # we are asked to return the arrays of partial products and radii for later use
 
-            return (A + (1.-A)*total_prod, A + (1.-A)*partial_prods, r_Arr)
+            return (Psurv, Psurv_part, r_Arr)
 
         else: # we are asked to simply give the survival probability and nothing else
 
-            return A + (1.-A)*total_prod
+            return Psurv_part
 
     elif method == 'simps':
 
@@ -183,7 +195,14 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
         integral = simps(integrand, rArr)
         argument = integral/L
 
-        return A + (1.-A)*exp(argument)
+        try:
+            Pconv = (1. - A)*(1. - exp(argument))
+        except:
+            Pconv = -huge
+
+        Psurv = 1. - Pconv
+
+        return Psurv
 
     elif method == 'quad':
 
@@ -199,8 +218,12 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
         integral = quad(integrand, r_ini, r_fin)[0]
         argument = integral/L
 
-        Pconv = (1.-A)*(1.-exp(argument)) # conversion probability
-        Psurv = 1. - Pconv # survival probability
+        try:
+            Pconv = (1. - A)*(1. - exp(argument))
+        except:
+            Pconv = -huge
+
+        Psurv = 1. - Pconv
 
         return Psurv
 

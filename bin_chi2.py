@@ -46,6 +46,7 @@ if __name__ == '__main__':
     flgc = False
     flgb = False
     flgn = False
+    verbose = False
     for opt, arg in opts:
         if opt == '-h':
             raise Exception(help_msg)
@@ -262,9 +263,12 @@ if __name__ == '__main__':
 
     # interpolating over the data
     chi2_ma_fn = interp1d(ma_chi2[:,0], ma_chi2[:,-1], fill_value="extrapolate")
+
+    if verbose:
+        print "\t(mass) block-wise chi2 bestfit\n", ma_chi2
     
     
-    # if we passed a shain with negative signal strength, we need to include it in our statistical analysis
+    # if we passed a chain with negative signal strength, we need to include it in our statistical analysis
     if flgn:
         
         #----------------------------------------------
@@ -325,7 +329,7 @@ if __name__ == '__main__':
         nchi2_ma_fn = interp1d(nma_chi2[:,0], nma_chi2[:,-1], fill_value="extrapolate")
 	
         if verbose:
-            print "block-wise chi2 bestfit for negative signal strength\n", nma_chi2
+            print "\t(mass) block-wise chi2 bestfit for negative signal strength\n", nma_chi2
     
     
     # plot
@@ -350,17 +354,33 @@ if __name__ == '__main__':
     
     # array of delta chi2
     delta_arr = chi2_ma_ga_fn(ma_gr, ga_gr) - bf_chi2_ma
+
+    # the chi2 threshold value
+    chi2_th = 2.705543
+    # chi2_th = 5.99
     
     # the points of the 2-sigma (95% C.L.) contour for a one-sided test (2.705543 chi2 threshold)
-    cs = plt.contour(ma_arr, ga_arr, delta_arr, levels=[2.705543])
+    plt.figure(101)
+    cs = plt.contour(ma_arr, ga_arr, delta_arr, levels=[chi2_th])
     p = cs.collections[0].get_paths()[0]
     v = p.vertices
     np.savetxt(pltpath(directory, head='one-sided_95CL_pts'+neg_str, ext='.txt'), v)
+    plt.close(101)
     
+    # plot
+    plt.figure(102)
+    plt.xlabel(r'$\log_{10} m_a$')
+    plt.ylabel(r'$\log_{10} g_a$')
+    plt.xlim(-17., -11.)
+    plt.ylim(-13., -8.)
+    plt.title(r'$\Delta \chi^2$ contours')
+
     # the delta_chi2 contour
-    plt.contour(ma_arr, ga_arr, delta_arr, levels=[2.705543], colors=['blue'], linestyles=['-'])
+    plt.contour(ma_arr, ga_arr, delta_arr, levels=[chi2_th], colors=['blue'], linestyles=['-'])
     
     if flgn: # make the same plot but without the chi2_min from the negative signal strength
-        plt.contour(ma_arr, ga_arr, (chi2_ma_ga_fn(ma_gr, ga_gr) - chi2_ma_fn(ma_gr)), levels=[2.705543], colors=['red'], linestyles=['--'])
+        plt.contour(ma_arr, ga_arr, (chi2_ma_ga_fn(ma_gr, ga_gr) - chi2_ma_fn(ma_gr)), levels=[chi2_th], colors=['red'], linestyles=['--'])
 
     plt.savefig(pltpath(directory, head='delta_chi2_contour'+neg_str))
+
+    plt.close(102)

@@ -30,6 +30,8 @@ G_over_eV2 = 1.95e-2 # G/eV^2 conversion # MANUEL: NOTE: FIND MORE ACCURATE VALU
 
 Mpc_times_eV = Mpc_times_GeV/GeV_over_eV # Mpc*eV conversion
 
+huge = 1.e50 # a huge number
+
 
 # FUNCTIONS:
 
@@ -160,7 +162,11 @@ def igm_Psurv(ma, g, z,
         P = P0(ma, gs, s, B=B, omega=omega, mg=mg, smoothed=smoothed) # z-independent probability conversion in one domain
         argument = -1.5*(y/s)*P # argument of exponential
 
-    Pconv = (1.-A)*(1.-exp(argument))
+    try:
+        Pconv = (1.-A)*(1.-exp(argument))
+    except:
+        Pconv = -huge # regularizing Pconv when argument >> 1
+
     Psurv = 1. - Pconv
 
     return Psurv

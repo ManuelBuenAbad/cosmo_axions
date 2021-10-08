@@ -28,6 +28,7 @@ G_over_eV2 = 1.95e-2 # G/eV^2 conversion # MANUEL: NOTE: FIND MORE ACCURATE VALU
 
 Mpc_times_eV = Mpc_times_GeV/GeV_over_eV # Mpc*eV conversion
 
+huge = 1.e50 # huge number
 
 # FUNCTIONS:
 
@@ -100,9 +101,18 @@ def P0(ma, g, x, B=1., omega=1., mg=3.e-15, smoothed=False):
     arg = (k(ma, g, B=B, omega=omega, mg=mg) * x_ieV)/2.
 
     if not smoothed:
-        osc = np.sin(arg)**2
+        try:
+            osc = np.sin(arg)**2
+        except:
+            try:
+                osc = (1 - exp(-2*arg**2.))/2.
+            except:
+                osc = -huge
     else:
-        osc = (1 - exp(-2*arg**2.))/2.
+        try:
+            osc = (1 - exp(-2*arg**2.))/2.
+        except:
+            osc = -huge
 
     return np.real(pref * osc)
 

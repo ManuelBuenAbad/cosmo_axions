@@ -23,7 +23,8 @@ _alpha_ = 1./137  # fine structure constant
 _me_ = 510998.95  # electron mass in eV
 _1_over_cm_eV_ = 1.9732698045930252e-5  # [1/cm/eV]
 
-
+huge = 1.e50 # a huge number
+tiny = 1.e-50 # a tiny number
 
 # FUNCTIONS:
 
@@ -222,8 +223,10 @@ def ADDMod(ma, g, z, h, OmL,
                              ne0=ne0, rc_outer=rc_outer, beta_outer=beta_outer, f_inner=f_inner, rc_inner=rc_inner, beta_inner=beta_inner)
 
         Pg, Pa = PICM, 1.-PICM
-        IaIg = Pa/Pg
-        # TODO: regularize 1-PICM?? (prevent negative values?)
+        try:
+            IaIg = Pa/Pg
+        except:
+            IaIg = -1.
 
     else:
         Pg = 1.
@@ -259,4 +262,13 @@ def ADDMod(ma, g, z, h, OmL,
                       Nz=Nz_IGM,
                       mu=mu)
 
-    return Pgg_CMB**2. / (Pgg_X * Pg)
+    # print "SZ={:.2e}, X={:.2e}, opt={:.2e}".format(Pgg_CMB, Pgg_X, Pg)
+    try:
+        modif = Pgg_CMB**2. / (Pgg_X * Pg)
+    except:
+        # regularizing
+        modif = tiny
+    # print modif
+        
+
+    return modif
