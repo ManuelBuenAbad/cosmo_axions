@@ -5,5 +5,5 @@ __pycache__
 local_test*
 **/test*/**
 *.pyc
-compare_w_git/**
 neg_chains.ipynb
+cluster_Rvir.ipynb
