@@ -152,7 +152,7 @@ def chi2_Pantheon(x, data=None, **kwargs):
     try:
         L_residuals = la.solve_triangular(PAN_cov, residuals, lower=True, check_finite=False)
         chi2 = np.dot(L_residuals, L_residuals)
-    except RuntimeWarning:
+    except:
         chi2 = huge
 
     return chi2

@@ -277,7 +277,7 @@ def ADDMod(ma, g, z, h, OmL,
                         Nz=Nz_IGM,
                         mu=mu)
 
-    print "IGM_SZ={:.2e}, IGM_X={:.2e}\tICM_SZ={:.2e}, ICM_X={:.2e}".format(PIGM_SZ, PIGM_X, PgSZ, PgX)
+    # print "IGM_SZ={:.2e}, IGM_X={:.2e}\tICM_SZ={:.2e}, ICM_X={:.2e}".format(PIGM_SZ, PIGM_X, PgSZ, PgX)
     
     # regularizing the CMB and X-ray IGM survival probabilities
     PIGM_SZ = np.clip(PIGM_SZ, -huge, huge)
