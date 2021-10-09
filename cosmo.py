@@ -211,64 +211,80 @@ def ADDMod(ma, g, z, h, OmL,
 
     if ICM_effect:
 
-        PICM = icm_los_Psurv(ma, g, r_low, r_up, ne_2beta, B_icm,
-                             L=L,
-                             omega_Xrays=omegaX/1000.,
-                             axion_ini_frac=0.,
-                             smoothed=smoothed_ICM, method=method_ICM, return_arrays=return_arrays, prob_func=prob_func_ICM, Nr=Nr_ICM, los_method=los_method, los_use_prepared_arrays=los_use_prepared_arrays, los_Nr=los_Nr,
-                             mu=mu,
-                             # B_icm
-                             B_ref=B_ref, r_ref=r_ref, eta=eta,
-                             # ne_2beta
-                             ne0=ne0, rc_outer=rc_outer, beta_outer=beta_outer, f_inner=f_inner, rc_inner=rc_inner, beta_inner=beta_inner)
+        PICM_X = icm_los_Psurv(ma, g, r_low, r_up, ne_2beta, B_icm,
+                               L=L,
+                               omega_Xrays=omegaX/1000.,
+                               axion_ini_frac=0.,
+                               smoothed=smoothed_ICM, method=method_ICM, return_arrays=return_arrays, prob_func=prob_func_ICM, Nr=Nr_ICM, los_method=los_method, los_use_prepared_arrays=los_use_prepared_arrays, los_Nr=los_Nr,
+                               mu=mu,
+                               # B_icm
+                               B_ref=B_ref, r_ref=r_ref, eta=eta,
+                               # ne_2beta
+                               ne0=ne0, rc_outer=rc_outer, beta_outer=beta_outer, f_inner=f_inner, rc_inner=rc_inner, beta_inner=beta_inner)
+        
+        PICM_SZ = icm_los_Psurv(ma, g, r_low, r_up, ne_2beta, B_icm,
+                                L=L,
+                                omega_Xrays=omegaCMB/1000.,
+                                axion_ini_frac=0.,
+                                smoothed=smoothed_ICM, method=method_ICM, return_arrays=return_arrays, prob_func=prob_func_ICM, Nr=Nr_ICM, los_method=los_method, los_use_prepared_arrays=los_use_prepared_arrays, los_Nr=los_Nr,
+                                mu=mu,
+                                # B_icm
+                                B_ref=B_ref, r_ref=r_ref, eta=eta,
+                                # ne_2beta
+                                ne0=ne0, rc_outer=rc_outer, beta_outer=beta_outer, f_inner=f_inner, rc_inner=rc_inner, beta_inner=beta_inner)
 
-        Pg, Pa = PICM, 1.-PICM
-        try:
-            IaIg = Pa/Pg
-        except:
-            IaIg = -1.
+        # regularizing the SZ and X-ray ICM survival probabilities:
+        PICM_X = np.clip(PICM_X, -huge, huge)
+        PICM_SZ = np.clip(PICM_SZ, -huge, huge)
+        
+        PgX, PaX = PICM_X, 1.-PICM_X
+        PgSZ, PaSZ = PICM_SZ, 1.-PICM_SZ
+        
+        IaIgX = PaX/PgX
+        IaIgSZ = PaSZ/PgSZ
 
     else:
-        Pg = 1.
-        IaIg = 0.
+        PgX, PgSZ = 1., 1.
+        IaIgX, IaIgSZ = 0., 0.
 
-    Pgg_X = igm_Psurv(ma, g, z,
-                      s=sIGM,
-                      B=BIGM,
-                      omega=omegaX,
-                      mg=mgIGM,
-                      h=h,
-                      Omega_L=OmL,
-                      axion_ini_frac=IaIg,
-                      smoothed=smoothed_IGM,
-                      redshift_dependent=redshift_dependent,
-                      method=method_IGM,
-                      prob_func=prob_func_IGM,
-                      Nz=Nz_IGM,
-                      mu=mu)
+    PIGM_X = igm_Psurv(ma, g, z,
+                       s=sIGM,
+                       B=BIGM,
+                       omega=omegaX,
+                       mg=mgIGM,
+                       h=h,
+                       Omega_L=OmL,
+                       axion_ini_frac=IaIgX,
+                       smoothed=smoothed_IGM,
+                       redshift_dependent=redshift_dependent,
+                       method=method_IGM,
+                       prob_func=prob_func_IGM,
+                       Nz=Nz_IGM,
+                       mu=mu)
 
-    Pgg_CMB = igm_Psurv(ma, g, z,
-                      s=sIGM,
-                      B=BIGM,
-                      omega=omegaCMB,
-                      mg=mgIGM,
-                      h=h,
-                      Omega_L=OmL,
-                      axion_ini_frac=0.,
-                      smoothed=smoothed_IGM,
-                      redshift_dependent=redshift_dependent,
-                      method=method_IGM,
-                      prob_func=prob_func_IGM,
-                      Nz=Nz_IGM,
-                      mu=mu)
+    PIGM_SZ = igm_Psurv(ma, g, z,
+                        s=sIGM,
+                        B=BIGM,
+                        omega=omegaCMB,
+                        mg=mgIGM,
+                        h=h,
+                        Omega_L=OmL,
+                        axion_ini_frac=IaIgSZ,
+                        smoothed=smoothed_IGM,
+                        redshift_dependent=redshift_dependent,
+                        method=method_IGM,
+                        prob_func=prob_func_IGM,
+                        Nz=Nz_IGM,
+                        mu=mu)
 
-    # print "SZ={:.2e}, X={:.2e}, opt={:.2e}".format(Pgg_CMB, Pgg_X, Pg)
-    try:
-        modif = Pgg_CMB**2. / (Pgg_X * Pg)
-    except:
-        # regularizing
-        modif = tiny
-    # print modif
-        
-
+    print "IGM_SZ={:.2e}, IGM_X={:.2e}\tICM_SZ={:.2e}, ICM_X={:.2e}".format(PIGM_SZ, PIGM_X, PgSZ, PgX)
+    
+    # regularizing the CMB and X-ray IGM survival probabilities
+    PIGM_SZ = np.clip(PIGM_SZ, -huge, huge)
+    PIGM_X = np.clip(PIGM_X, -huge, huge)
+    
+    modif = (PIGM_SZ**2. * PgSZ**2.) / (PIGM_X * PgX)
+    # regularizing again:
+    modif = np.clip(modif, -huge, huge)
+    
     return modif

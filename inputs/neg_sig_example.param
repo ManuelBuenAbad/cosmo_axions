@@ -123,6 +123,7 @@ los_use_prepared_arrays = True
 
 # the line-of-sight integration method:
 los_method = quad
+# los_method = simps
 
 # if the method is simps, the number of radii points in the integration array:
 # los_Nr = 501

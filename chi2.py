@@ -10,6 +10,9 @@ from numpy import pi, sqrt, log, log10, exp, power
 from cosmo import H_at_z, tau_at_z, dA_at_z, muLCDM, LumMod, ADDMod
 import data
 
+# import warnings
+# In order to handle RuntimeWarning overflows;
+# warnings.filterwarnings("error")
 
 ##########################
 # auxiliary functions
@@ -142,11 +145,14 @@ def chi2_Pantheon(x, data=None, **kwargs):
         change = LumMod(ma, ga, z, h=h0, OmL=OmL, **kwargs)
 
         residuals.append(muLCDM(z, h0, OmL) - m_meas + M0 - change)
+    
+#     # regularizing the residuals
+#     residuals = np.clip(residuals, -huge, huge)
 
     try:
         L_residuals = la.solve_triangular(PAN_cov, residuals, lower=True, check_finite=False)
         chi2 = np.dot(L_residuals, L_residuals)
-    except:
+    except RuntimeWarning:
         chi2 = huge
 
     return chi2
@@ -229,18 +235,25 @@ def chi2_clusters(pars, data=None, wanna_correct=True, fixed_Rvir=False, **kwarg
         residuals.append(DA - DA_th)
 
     residuals = np.array(residuals)
+    
+    # fractional residuals
+    frac_residuals = residuals/err_cls
+    # regularizing them:
+    frac_residuals = np.clip(frac_residuals, -huge, huge)
 
     correction = 1.
-
     try:
         if wanna_correct:
-            correction += -2.*asymm_cls * (residuals/err_cls) + 5.*asymm_cls**2. * (residuals/err_cls)**2.
-
-        terms = ((residuals / err_cls)**2.)*correction
-
+            correction += -2.*asymm_cls * frac_residuals + 5.*asymm_cls**2. * frac_residuals**2.
+        
+        # all chi2 terms:
+        terms = (frac_residuals**2.)*correction
+        # regularizing them:
+        terms = np.clip(terms, -huge, huge)
+        
         chi2 = terms.sum()
 
-    except:
+    except RuntimeWarning:
         chi2 = huge
 
 

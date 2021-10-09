@@ -156,14 +156,12 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
         r_Arr = (r_ini + L/2.) + L*np.arange(N) # array of r-values of the domains' centers
         P_Arr = P(r_Arr) # array of conversion probabilities
         factors = 1. - 1.5*P_Arr # the factors in each domain
+        
+        # regularizing the factors
+        factors = np.clip(factors, -huge, power(huge, 1./N))
 
-        try:
-            total_prod = factors.prod()
-            partial_prods = cumprod(factors[::-1])[::-1]
-        except:
-            total_prod = huge
-            partial_prods = cumprod(factors[::-1])[::-1]
-            partial_prods = np.where(partial_prods > huge, huge, partial_prods)
+        total_prod = factors.prod()
+        partial_prods = cumprod(factors[::-1])[::-1]
 
         Pconv = (1.-A)*(1. - total_prod)
         Psurv = 1. - Pconv
@@ -194,12 +192,11 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
 
         integral = simps(integrand, rArr)
         argument = integral/L
+        
+        # regularizing the argument
+        argument = np.clip(argument, -huge, log(huge))
 
-        try:
-            Pconv = (1. - A)*(1. - exp(argument))
-        except:
-            Pconv = -huge
-
+        Pconv = (1. - A)*(1. - exp(argument))
         Psurv = 1. - Pconv
 
         return Psurv
@@ -217,12 +214,11 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
 
         integral = quad(integrand, r_ini, r_fin)[0]
         argument = integral/L
+        
+        # regularizing the argument
+        argument = np.clip(argument, -huge, log(huge))
 
-        try:
-            Pconv = (1. - A)*(1. - exp(argument))
-        except:
-            Pconv = -huge
-
+        Pconv = (1. - A)*(1. - exp(argument))
         Psurv = 1. - Pconv
 
         return Psurv
@@ -231,7 +227,7 @@ def icm_Psurv(ma, g, r_ini, r_fin, ne_fn, B_fn,
         raise ValueError("Argument 'method'={} must be equal to either 'simps', 'quad', or 'product'. It's neither.".format(method))
 
 
-
+# TODO: maybe, if mu<0, los_use_prepared_arrays=True? How to avoid errors and warnings?
 def icm_los_Psurv(ma, g, r_low, r_up, ne_fn, B_fn,
                   L=10.,
                   omega_Xrays=10.,

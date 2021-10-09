@@ -162,11 +162,10 @@ def igm_Psurv(ma, g, z,
         P = P0(ma, gs, s, B=B, omega=omega, mg=mg, smoothed=smoothed) # z-independent probability conversion in one domain
         argument = -1.5*(y/s)*P # argument of exponential
 
-    try:
-        Pconv = (1.-A)*(1.-exp(argument))
-    except:
-        Pconv = -huge # regularizing Pconv when argument >> 1
-
+    # regularizing the argument:
+    argument = np.clip(argument, -huge, log(huge))
+    
+    Pconv = (1.-A)*(1.-exp(argument))
     Psurv = 1. - Pconv
 
     return Psurv
